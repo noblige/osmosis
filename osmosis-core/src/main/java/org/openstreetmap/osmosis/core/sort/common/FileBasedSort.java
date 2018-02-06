@@ -29,7 +29,7 @@ public class FileBasedSort<T extends Storeable> implements Closeable {
 	 * chunks sorted in memory before writing to file, and all the results
 	 * merged using the merge sort algorithm.
 	 */
-	private static final int MAX_MEMORY_SORT_COUNT = 16384;
+	private static final int MAX_MEMORY_SORT_COUNT = 163840;
 	
 	/**
 	 * The maximum number of sources to merge together at a single level of the
