@@ -30,7 +30,7 @@ public class EntitySorter implements SinkSource {
 	 *            The comparator to use for sorting.
 	 */
 	public EntitySorter(Comparator<EntityContainer> comparator) {
-		this(comparator, true);
+		this(comparator, false);
 	}
 
 	/**
