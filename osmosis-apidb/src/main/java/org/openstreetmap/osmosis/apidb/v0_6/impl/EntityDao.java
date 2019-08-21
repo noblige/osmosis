@@ -115,10 +115,8 @@ public abstract class EntityDao<T extends Entity> {
 		StringBuilder sql;
 
 		sql = new StringBuilder();
-		sql.append("SELECT e.");
-		sql.append(entityName);
-		sql.append("_id AS id, e.version, e.timestamp, e.visible, u.data_public,");
-		sql.append(" u.id AS user_id, u.display_name, e.changeset_id");
+		sql.append("SELECT id, e.version, e.timestamp, e.visible, TRUE AS data_public,");
+		sql.append(" 0 AS user_id, 'editor' AS display_name, 0 AS changeset_id");
 
 		for (String fieldName : getTypeSpecificFieldNames()) {
 			sql.append(", e.");
@@ -126,16 +124,8 @@ public abstract class EntityDao<T extends Entity> {
 		}
 
 		sql.append(" FROM ");
-		sql.append(entityName);
-		sql.append("s e");
-		sql.append(" INNER JOIN ");
 		sql.append(selectedEntityStatement);
-		sql.append(" t ON e.");
-		sql.append(entityName);
-		sql.append("_id = t.");
-		sql.append(entityName);
-		sql.append("_id AND e.version = t.version");
-		sql.append(" INNER JOIN changesets c ON e.changeset_id = c.id INNER JOIN users u ON c.user_id = u.id");
+		sql.append("s e");
 		
 		LOG.log(Level.FINER, "Entity history query: " + sql);
 
@@ -209,17 +199,10 @@ public abstract class EntityDao<T extends Entity> {
 			sql =
 				"SELECT et."
 				+ entityName
-				+ "_id AS id, et.k, et.v, et.version"
+				+ "_id AS id, et.k, et.v, 0 AS version"
 				+ " FROM "
-				+ entityName
-				+ "_tags et"
-				+ " INNER JOIN "
 				+ selectedEntityStatement
-				+ " t ON et."
-				+ entityName
-				+ "_id = t."
-				+ entityName
-				+ "_id AND et.version = t.version";
+				+ "_tags et";
 			
 			LOG.log(Level.FINER, "Tag history query: " + sql);
 			
@@ -550,8 +533,7 @@ public abstract class EntityDao<T extends Entity> {
 		// Join the entity table to the current version of itself which will return all current
 		// records.
 		return new EntityContainerReader<T>(
-				getEntityHistory("(SELECT id AS " + entityName + "_id, version FROM current_"
-							+ entityName + "s WHERE visible = TRUE)",
+				getEntityHistory("current_" + entityName,
 						new MapSqlParameterSource()), getContainerFactory());
 	}
 }

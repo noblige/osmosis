@@ -94,12 +94,10 @@ public class RelationDao extends EntityDao<Relation> {
 			ReleasableIterator<DbFeatureHistory<DbOrderedFeature<RelationMember>>> resultIterator;
 			
 			sql =
-				"SELECT rm.relation_id AS id, rm.member_id, rm.member_role, rm.member_type, rm.version, rm.sequence_id"
+				"SELECT rm.relation_id AS id, rm.member_id, rm.member_role, rm.member_type, 0 AS version, rm.sequence_id"
 				+ " FROM "
-				+ "relation_members rm"
-				+ " INNER JOIN "
 				+ selectedEntityStatement
-				+ " t ON rm.relation_id = t.relation_id AND rm.version = t.version";
+				+ "_members rm";
 			
 			LOG.log(Level.FINER, "Relation member history query: " + sql);
 			
